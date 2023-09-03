@@ -7,7 +7,7 @@ RUN pacman -Syyu --noconfirm && \
 
 # clone .dotfiles
 WORKDIR /root
-RUN git clone https://github.com/teemu-mjr/.dotfiles --recursive
+RUN git clone https://github.com/teemu-mjr/.dotfiles --depth 1
 
 # install .dotfiles
 WORKDIR /root/.dotfiles
@@ -21,12 +21,13 @@ RUN pacman -S --noconfirm \
   curl \
   gcc \
   fish \
-  neovim 
+  tmux \
+  neovim
 
-# install oh-my-posh
-RUN wget https://github.com/JanDeDobbeleer/oh-my-posh/releases/latest/download/posh-linux-amd64 -O /usr/local/bin/oh-my-posh && \
-  chmod +x /usr/local/bin/oh-my-posh
+# clone nvim
+WORKDIR /root/.config
+RUN git clone https://github.com/teemu-mjr/nvim --depth 1
 
 # sync neovim
-RUN nvim --headless -c "autocmd User PackerComplete quitall" -c "PackerSync"
-RUN nvim --headless "+TSInstallSync! all" +qa
+WORKDIR /root
+RUN nvim --headless "+Lazy! sync" +qa
